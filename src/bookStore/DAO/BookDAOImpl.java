@@ -2,6 +2,8 @@ package bookStore.DAO;
 
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import bookStore.model.Book;
 import bookStore.util.DBUtil;
@@ -87,4 +89,49 @@ public class BookDAOImpl implements BookDAO {
 		return list;
 	}
 
-}
+	@Override
+	public int getStock(int bookId) {
+		int stk=0;
+		String query="select * from books where book_id=?";
+		try(Connection con=DBUtil.getConnection();
+			PreparedStatement ps=con.prepareStatement(query)){
+			ps.setInt(1,bookId);
+			ResultSet rs=ps.executeQuery();
+			if(rs.next()) stk=rs.getInt("stock");
+			System.out.println(stk);
+			} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return stk;
+	}
+
+	@Override
+	public int getBookStock(int bookId) throws SQLException {
+		String sql = "SELECT stock FROM books WHERE book_id = ?";
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, bookId);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt("stock");
+	        }
+	    }
+	    return 0; // book not found or zero stock
+	}
+
+	public boolean exists(int bookId) throws SQLException {
+		final Logger logger = Logger.getLogger(BookDAO.class.getName());
+	    String sql = "SELECT 1 FROM books WHERE book_id=?";
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, bookId);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	        	logger.info("Checked existence of book ID: " + bookId);
+	            return rs.getInt(1) > 0;} // If count > 0 → exists
+	        }  catch (SQLException e) {
+	            logger.log(Level.SEVERE, "DB error while checking book existence", e);
+	        }
+	        return false;
+	    }
+	}
