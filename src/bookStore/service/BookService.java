@@ -12,5 +12,6 @@ public interface BookService {
 	public Book searchById(int id) throws BookNotFoundException;
 	public void updateBook(Book book) throws BookNotFoundException; 
 	public void deleteBook(int id) throws BookNotFoundException;
+	public void updateStock(int id,int updatedStock) throws BookNotFoundException,InvalidInputException;
 	public List<Book> viewAllBooks();
 }

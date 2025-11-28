@@ -13,4 +13,5 @@ public interface BookDAO {
     int getBookStock(int bookId) throws SQLException;
     List<Book> getAllBooks();
     public boolean exists(int bookId) throws SQLException;
+    boolean updateStock(int id,int stock) throws SQLException;
 }

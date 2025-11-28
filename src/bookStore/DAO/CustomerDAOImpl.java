@@ -80,13 +80,12 @@ public class CustomerDAOImpl implements CustomerDAO {
 	
 	public boolean exists(int customerId) throws SQLException {
 		final Logger logger = Logger.getLogger(CustomerDAO.class.getName());
-	    String sql = "SELECT COUNT(*) FROM customers WHERE id = ?";
+	    String sql = "SELECT COUNT(*) FROM customers WHERE customer_id = ?";
 	    try (Connection con=DBUtil.getConnection();
 	    	PreparedStatement ps = con.prepareStatement(sql)) {
 	        ps.setInt(1, customerId);
 	        ResultSet rs = ps.executeQuery();
 	        if (rs.next()) {
-	        	logger.info("Checked existence of customer ID: " + customerId);
 	            return rs.getInt(1) > 0; }// If count > 0 → exists
 	        } catch (SQLException e) {
 	            logger.log(Level.SEVERE, "DB error while checking customer existence", e);

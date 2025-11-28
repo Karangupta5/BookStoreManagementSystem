@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
 	public void deleteBook(int id) throws BookNotFoundException {
 		if(dao.getBookbyId(id)==null) throw new BookNotFoundException("Book Not Found ID: "+ id);
 		try {
-			dao.addBook(null);
+			dao.deleteBook(id);
 			System.out.println("Book deleted successfully");
 		} catch(Exception e) {
 			System.out.println("Error Deleting Book "+e.getMessage());
@@ -56,6 +56,18 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<Book> viewAllBooks() {
 		return dao.getAllBooks();
+	}
+
+	@Override
+	public void updateStock(int id,int updatedStock) throws BookNotFoundException, InvalidInputException {
+		if(dao.getBookbyId(id)==null) throw new BookNotFoundException("Book Not Found ID: "+ id);
+		if(updatedStock<0) throw new InvalidInputException("Stock can not be negative");
+		try {
+			dao.updateStock(id,updatedStock);
+			System.out.println("Stock updated successfully");
+		}catch(Exception e) {
+			System.out.println("Error Updating Book "+e.getMessage());
+		}
 	}
 
 }

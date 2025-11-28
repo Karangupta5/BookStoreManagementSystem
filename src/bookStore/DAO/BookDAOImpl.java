@@ -121,7 +121,7 @@ public class BookDAOImpl implements BookDAO {
 
 	public boolean exists(int bookId) throws SQLException {
 		final Logger logger = Logger.getLogger(BookDAO.class.getName());
-	    String sql = "SELECT 1 FROM books WHERE book_id=?";
+	    String sql = "SELECT count(*) FROM books WHERE book_id=?";
 	    try (Connection conn = DBUtil.getConnection();
 	         PreparedStatement ps = conn.prepareStatement(sql)) {
 	        ps.setInt(1, bookId);
@@ -134,4 +134,19 @@ public class BookDAOImpl implements BookDAO {
 	        }
 	        return false;
 	    }
+
+	@Override
+	public boolean updateStock(int id, int stock) throws SQLException {
+		String query="update books set stock=stock+? where book_id=?";
+		final Logger logger = Logger.getLogger(BookDAO.class.getName());
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(query)) {
+	        ps.setInt(1, stock);
+	        ps.setInt(2, id);
+	        return ps.executeUpdate()>0;
+	        }  catch (SQLException e) {
+	            logger.log(Level.SEVERE, "DB error while updating stock", e);
+	        }
+		return false;
+	}
 	}
